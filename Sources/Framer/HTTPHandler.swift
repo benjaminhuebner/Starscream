@@ -48,13 +48,13 @@ public struct HTTPWSHeader {
     /// - Parameter supportsCompression: set if the client support text compression.
     /// - Parameter secKeyName: the security key to use in the WebSocket request. https://tools.ietf.org/html/rfc6455#section-1.3
     /// - returns: A URLRequest request to be converted to data and sent to the server.
-    public static func createUpgrade(request: URLRequest, supportsCompression: Bool, secKeyValue: String) -> URLRequest {
+    public static func createUpgrade(request: URLRequest, supportsCompression: Bool, secKeyValue: String, allowsNoOriginHeader: Bool = false) -> URLRequest {
         guard let url = request.url, let parts = url.getParts() else {
             return request
         }
         
         var req = request
-        if request.value(forHTTPHeaderField: HTTPWSHeader.originName) == nil {
+        if request.value(forHTTPHeaderField: HTTPWSHeader.originName) == nil && !allowsNoOriginHeader {
             var origin = url.absoluteString
             if let hostUrl = URL (string: "/", relativeTo: url) {
                 origin = hostUrl.absoluteString
